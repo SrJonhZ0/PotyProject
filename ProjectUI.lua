@@ -1,3 +1,4 @@
+
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -144,31 +145,9 @@ local function bindDrag(region, onUpdate)
 	end)
 end
 
-local function getGuiParent()
-	local CoreGui = game:GetService("CoreGui")
-
-	-- Primeiro tenta usar o CoreGui protegido
-	if type(cloneref) == "function" then
-		local ok, result = pcall(function()
-			return cloneref(CoreGui)
-		end)
-
-		if ok and result then
-			CoreGui = result
-		end
-	end
-
-	-- Se o executor fornecer gethui, usa o container protegido
-	if type(gethui) == "function" then
-		local ok, hui = pcall(gethui)
-
-		if ok and hui then
-			return hui
-		end
-	end
-
-	return CoreGui
-end
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 -- Copy a string to clipboard. Returns whether a clipboard fn was available.
 local function copyToClipboard(str)
@@ -206,8 +185,7 @@ local ScreenGui = create("ScreenGui", {
 	IgnoreGuiInset = true,
 	DisplayOrder = 999,
 })
-pcall(function() if syn and syn.protect_gui then syn.protect_gui(ScreenGui) end end)
-ScreenGui.Parent = getGuiParent()
+ScreenGui.Parent = PlayerGui
 
 -- Notification stack (bottom-right)
 local NotifHolder = create("Frame", {
